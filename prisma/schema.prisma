@@ -1,0 +1,58 @@
+  // This is your Prisma schema file,
+  // learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+  // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+  // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+  generator client {
+    provider = "prisma-client-js"
+  }
+
+  datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+  }
+
+  model User {
+    id               Int                @id @default(autoincrement())
+    username         String             @unique
+    email            String             @unique
+    password         String
+    image            String             @default("default-image.png")
+    emailVerified    Boolean            @default(false)
+    conversations    Conversations[]    @relation("UserConversation")
+    Messages         Messages[]
+    createdAt        DateTime           @default(now())
+    updatedAt        DateTime           @updatedAt
+    UserConversation UserConversation[]
+  }
+
+  model Conversations {
+    id               Int                @id @default(autoincrement())
+    name             String?
+    type             String
+    users            User[]             @relation("UserConversation")
+    Messages         Messages[]
+    createdAt        DateTime           @default(now())
+    updatedAt        DateTime           @updatedAt
+    UserConversation UserConversation[]
+  }
+
+  model Messages {
+    id             Int           @id @default(autoincrement())
+    content        String
+    senderId       Int
+    sender         User          @relation(fields: [senderId], references: [id])
+    conversationId Int
+    conversation   Conversations @relation(fields: [conversationId], references: [id])
+    createdAt      DateTime      @default(now()) // Timestamp of when the message was sent
+    updatedAt      DateTime      @updatedAt
+  }
+
+  model UserConversation {
+    id             Int           @id @default(autoincrement())
+    userId         Int
+    conversationId Int
+    user           User          @relation(fields: [userId], references: [id])
+    conversation   Conversations @relation(fields: [conversationId], references: [id])
+  }
