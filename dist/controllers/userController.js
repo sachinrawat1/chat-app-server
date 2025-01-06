@@ -48,7 +48,7 @@ exports.registerUser = (0, asyncHandlerMiddleware_1.default)((req, res, next) =>
             password: hashed_password,
         },
     });
-    res.status(201).send({
+    return res.status(201).send({
         success: true,
         message: "user registered successfully",
         data: {
@@ -72,11 +72,14 @@ exports.loginUser = (0, asyncHandlerMiddleware_1.default)((req, res) => __awaite
     if (!match_password) {
         throw new customError_1.CustomError(`Wrong email/username or password`, 400);
     }
+    const token = (0, generateToken_1.default)(res, existUser.id);
     const { password: _ } = existUser, userDetails = __rest(existUser, ["password"]);
-    (0, generateToken_1.default)(res, existUser.id);
-    res
-        .status(200)
-        .send({ status: true, message: "login successfully", data: userDetails });
+    return res.status(200).send({
+        status: true,
+        message: "login successfully",
+        data: userDetails,
+        token,
+    });
 }));
 exports.searchUserWithEmailOrUsername = (0, asyncHandlerMiddleware_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { search } = req.query;
@@ -107,7 +110,7 @@ exports.searchUserWithEmailOrUsername = (0, asyncHandlerMiddleware_1.default)((r
             updatedAt: true,
         },
     });
-    res.status(200).send({
+    return res.status(200).send({
         success: true,
         message: users.length > 0 ? "Users found" : "Users not found",
         data: users,

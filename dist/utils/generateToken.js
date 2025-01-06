@@ -15,5 +15,6 @@ const generateToken = (res, userId) => {
         sameSite: true,
         maxAge: 1000 * 60 * 60 * 24 * 30,
     });
+    return token;
 };
 exports.default = generateToken;

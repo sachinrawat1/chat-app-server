@@ -9,6 +9,7 @@ const http_1 = __importDefault(require("http"));
 const socket_io_1 = require("socket.io");
 const cors_1 = __importDefault(require("cors"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
+const conversationRoutes_1 = __importDefault(require("./routes/conversationRoutes"));
 const errorMiddleware_1 = require("./middleware/errorMiddleware");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -27,6 +28,7 @@ app.get("/", (req, res) => {
     res.send("Server Running...");
 });
 app.use("/apis/v1/users", userRoutes_1.default);
+app.use("/apis/v1/conversations", conversationRoutes_1.default);
 app.use(errorMiddleware_1.errorHandler);
 server.listen(port, () => {
     console.log(`SERVER RUNNING ON PORT ${port}`);

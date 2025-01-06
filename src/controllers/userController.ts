@@ -6,7 +6,7 @@ import generateToken from "../utils/generateToken";
 import { CustomError } from "../utils/customError";
 
 export const registerUser = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const { username, email, password } = req.body;
 
     const existing_user = await prisma.user.findFirst({
@@ -33,7 +33,7 @@ export const registerUser = asyncHandler(
       },
     });
 
-    res.status(201).send({
+    return res.status(201).send({
       success: true,
       message: "user registered successfully",
       data: {
@@ -46,7 +46,7 @@ export const registerUser = asyncHandler(
 );
 
 export const loginUser = asyncHandler(
-  async (req: Request, res: Response): Promise<void> => {
+  async (req: Request, res: Response): Promise<any> => {
     const { emailOrUsername, password } = req.body;
 
     const existUser = await prisma.user.findFirst({
@@ -65,19 +65,17 @@ export const loginUser = asyncHandler(
 
     const token = generateToken(res, existUser.id);
     const { password: _, ...userDetails } = existUser;
-    res
-      .status(200)
-      .send({
-        status: true,
-        message: "login successfully",
-        data: userDetails,
-        token,
-      });
+    return res.status(200).send({
+      status: true,
+      message: "login successfully",
+      data: userDetails,
+      token,
+    });
   }
 );
 
 export const searchUserWithEmailOrUsername = asyncHandler(
-  async (req: Request, res: Response): Promise<void> => {
+  async (req: Request, res: Response): Promise<any> => {
     const { search } = req.query;
 
     const users = await prisma.user.findMany({
@@ -108,7 +106,7 @@ export const searchUserWithEmailOrUsername = asyncHandler(
       },
     });
 
-    res.status(200).send({
+    return res.status(200).send({
       success: true,
       message: users.length > 0 ? "Users found" : "Users not found",
       data: users,

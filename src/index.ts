@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 
 import userRoutes from "./routes/userRoutes";
+import conversationRoutes from "./routes/conversationRoutes";
 import { errorHandler } from "./middleware/errorMiddleware";
 
 dotenv.config();
@@ -30,6 +31,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/apis/v1/users", userRoutes);
+app.use("/apis/v1/conversations", conversationRoutes);
 app.use(errorHandler);
 
 server.listen(port, () => {
